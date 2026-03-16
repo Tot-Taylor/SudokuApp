@@ -1,5 +1,5 @@
 import XCTest
-@testable import SudokuAppCore
+@testable import SudokuApp
 
 final class SudokuSolverTests: XCTestCase {
     func testValidPlacementCheckRejectsRowDuplicate() {

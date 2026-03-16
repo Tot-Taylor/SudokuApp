@@ -1,4 +1,6 @@
+#if canImport(Combine)
 import Foundation
+import Combine
 
 @MainActor
 final class HomeViewModel: ObservableObject {
@@ -57,3 +59,4 @@ final class HomeViewModel: ObservableObject {
         return snapshot
     }
 }
+#endif

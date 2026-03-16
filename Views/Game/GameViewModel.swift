@@ -1,4 +1,6 @@
+#if canImport(Combine)
 import Foundation
+import Combine
 
 @MainActor
 final class GameViewModel: ObservableObject {
@@ -122,3 +124,4 @@ final class GameViewModel: ObservableObject {
         persistence.save(snapshot)
     }
 }
+#endif

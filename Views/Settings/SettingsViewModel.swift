@@ -1,4 +1,6 @@
+#if canImport(Combine)
 import Foundation
+import Combine
 
 @MainActor
 final class SettingsViewModel: ObservableObject {
@@ -18,3 +20,4 @@ final class SettingsViewModel: ObservableObject {
         settingsService.saveSettings(GameSettingsTemplate(hintsPerGame: hintsPerGame, livesPerGame: livesPerGame))
     }
 }
+#endif
