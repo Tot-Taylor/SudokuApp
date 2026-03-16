@@ -8,21 +8,21 @@ let package = Package(
         .macOS(.v13)
     ],
     products: [
-        .library(name: "SudokuAppCore", targets: ["SudokuAppCore"])
+        .executable(name: "SudokuApp", targets: ["SudokuApp"])
     ],
     targets: [
-        .target(
-            name: "SudokuAppCore",
+        .executableTarget(
+            name: "SudokuApp",
             path: ".",
             exclude: [
                 ".git",
-                "Views",
-                "App",
                 "README.md",
                 "Package.swift",
                 "Tests"
             ],
             sources: [
+                "App",
+                "Views",
                 "Models",
                 "Services",
                 "Persistence",
@@ -30,8 +30,8 @@ let package = Package(
             ]
         ),
         .testTarget(
-            name: "SudokuAppCoreTests",
-            dependencies: ["SudokuAppCore"],
+            name: "SudokuAppTests",
+            dependencies: ["SudokuApp"],
             path: "Tests"
         )
     ]
