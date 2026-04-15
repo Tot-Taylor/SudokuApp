@@ -16,12 +16,11 @@ Initial scaffold for a SwiftUI + MVVM iOS Sudoku application.
 
 This initial push focuses on a functional architecture skeleton and core game-domain logic designed for rapid iteration.
 
-## Run in Xcode
+## Run in Xcode (iPhone Simulator)
 
-1. Open Xcode and choose **File → Open...**.
-2. Select this repository folder (`SudokuApp`) so Xcode opens `Package.swift`.
-3. Choose the **SudokuApp** scheme (the executable target) and an iOS Simulator device.
+1. Open `SudokuApp.xcodeproj` in Xcode.
+2. Select the shared **SudokuApp** scheme.
+3. Choose an iPhone Simulator device (for example, *iPhone 16*).
 4. Press **Run**.
 
-The package now exposes `SudokuApp` as an executable SwiftUI app target for local app runs in Xcode.
-
+This repository now includes a native iOS Xcode project so the app can be launched directly in Simulator after cloning.
