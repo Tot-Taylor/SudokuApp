@@ -30,12 +30,12 @@ struct PuzzleGenerationService: PuzzleGenerationServiceProtocol {
     }
 
     func generatePuzzle(for difficulty: Difficulty, seed: Int64?) -> ([[Int?]], [[Int]])? {
-        var rng = LocalSeededRandomNumberGenerator(seed: seed ?? Int64.random(in: Int64.min...Int64.max))
+        var rng = SeededRandomNumberGenerator(seed: seed ?? Int64.random(in: Int64.min...Int64.max))
         let targetClueRange = clueRange(for: difficulty)
 
         for _ in 0..<maxAttemptsPerBatch {
             let solved = generateSolvedGrid(using: &rng)
-            var puzzle: [[Int?]] = solved.map { row in row.map { value in Optional(value) } }
+            var puzzle = solved.map { $0.map(Optional.some) }
 
             for index in Array(0..<81).shuffled(using: &rng) {
                 let row = index / 9
@@ -100,22 +100,5 @@ struct PuzzleGenerationService: PuzzleGenerationServiceProtocol {
         }
 
         return lines
-    }
-}
-
-private struct LocalSeededRandomNumberGenerator: RandomNumberGenerator {
-    private var state: UInt64
-
-    init(seed: Int64) {
-        let normalized = UInt64(bitPattern: seed)
-        self.state = normalized == 0 ? 0x9E3779B97F4A7C15 : normalized
-    }
-
-    mutating func next() -> UInt64 {
-        state &+= 0x9E3779B97F4A7C15
-        var z = state
-        z = (z ^ (z >> 30)) &* 0xBF58476D1CE4E5B9
-        z = (z ^ (z >> 27)) &* 0x94D049BB133111EB
-        return z ^ (z >> 31)
     }
 }
