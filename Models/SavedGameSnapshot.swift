@@ -1,6 +1,6 @@
 import Foundation
 
-struct SavedGameSnapshot: Codable {
+struct SavedGameSnapshot: Codable, Identifiable {
     let id: UUID
     let difficulty: Difficulty
     var puzzleBoard: SudokuBoardState

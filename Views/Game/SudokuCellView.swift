@@ -7,7 +7,7 @@ struct SudokuCellView: View {
 
     var body: some View {
         Button(action: onTap) {
-            Text(cell.currentValue.map(String.init) ?? "")
+            Text(cell.currentValue.map(String.init) ?? "·")
                 .frame(maxWidth: .infinity, minHeight: 34)
                 .background(cell.givenValue == nil ? Color.gray.opacity(0.1) : Color.blue.opacity(0.15))
         }
