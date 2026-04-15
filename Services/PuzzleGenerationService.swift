@@ -35,7 +35,7 @@ struct PuzzleGenerationService: PuzzleGenerationServiceProtocol {
 
         for _ in 0..<maxAttemptsPerBatch {
             let solved = generateSolvedGrid(using: &rng)
-            var puzzle = solved.map { $0.map(Optional.some) }
+            var puzzle = solved.map { row in row.map { Optional($0) } }
 
             for index in Array(0..<81).shuffled(using: &rng) {
                 let row = index / 9
