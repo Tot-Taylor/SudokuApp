@@ -5,6 +5,7 @@ struct SudokuGridView: View {
     let board: SudokuBoardState
     let selectedRow: Int?
     let selectedCol: Int?
+    let isInteractionEnabled: Bool
     let onTap: (Int, Int) -> Void
 
     var body: some View {
@@ -15,7 +16,8 @@ struct SudokuGridView: View {
                         SudokuCellView(
                             cell: board.cell(row: row, col: col),
                             isSelected: selectedRow == row && selectedCol == col,
-                            isInSelectedBand: selectedRow == row || selectedCol == col
+                            isInSelectedBand: selectedRow == row || selectedCol == col,
+                            isInteractionEnabled: isInteractionEnabled
                         ) {
                             onTap(row, col)
                         }

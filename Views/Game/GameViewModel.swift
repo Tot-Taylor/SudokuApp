@@ -6,6 +6,7 @@ import Combine
 final class GameViewModel: ObservableObject, Identifiable {
     let id: UUID
     @Published private(set) var snapshot: SavedGameSnapshot
+    @Published var isShowingCompletionPopup = false
 
     var board: SudokuBoardState { snapshot.puzzleBoard }
     var difficulty: Difficulty { snapshot.difficulty }
@@ -45,6 +46,7 @@ final class GameViewModel: ObservableObject, Identifiable {
         snapshot.undoStack.append(
             UndoEntry(row: row, col: col, previousValue: previousValue, newValue: value, previousOrigin: previousOrigin, newOrigin: .user, actionType: .placement)
         )
+        evaluateCompletionIfNeeded()
         persist()
     }
 
@@ -85,6 +87,7 @@ final class GameViewModel: ObservableObject, Identifiable {
             $0.currentValue = $0.solutionValue
             $0.origin = .hint
         }
+        evaluateCompletionIfNeeded()
         persist()
     }
 
@@ -121,6 +124,19 @@ final class GameViewModel: ObservableObject, Identifiable {
         snapshot.isFinished = true
         snapshot.endReason = endReason
         persist()
+    }
+
+    private func evaluateCompletionIfNeeded() {
+        let cells = snapshot.puzzleBoard.cells
+        let isFilled = cells.allSatisfy { $0.currentValue != nil }
+        guard isFilled else { return }
+
+        let isSolved = cells.allSatisfy { $0.currentValue == $0.solutionValue }
+        guard isSolved else { return }
+
+        snapshot.isFinished = true
+        snapshot.endReason = .solved
+        isShowingCompletionPopup = true
     }
 
     private func persist() {
