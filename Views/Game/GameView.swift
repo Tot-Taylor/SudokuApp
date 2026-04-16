@@ -4,6 +4,7 @@ import SwiftUI
 struct GameView: View {
     @StateObject var viewModel: GameViewModel
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         VStack(spacing: 16) {
@@ -34,6 +35,25 @@ struct GameView: View {
                 completionPopup
             }
         }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    viewModel.handleLeavingGame()
+                    dismiss()
+                } label: {
+                    Label("Back", systemImage: "chevron.left")
+                }
+            }
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .background || newPhase == .inactive {
+                viewModel.handleAppMovingToBackground()
+            }
+        }
+        .onDisappear {
+            viewModel.handleLeavingGame()
+        }
     }
 
     private var completionPopup: some View {
@@ -51,6 +71,7 @@ struct GameView: View {
                 HStack(spacing: 12) {
                     Button("Back to Home") {
                         viewModel.isShowingCompletionPopup = false
+                        viewModel.handleLeavingGame()
                         dismiss()
                     }
                     .buttonStyle(.borderedProminent)

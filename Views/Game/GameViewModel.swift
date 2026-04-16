@@ -13,6 +13,7 @@ final class GameViewModel: ObservableObject, Identifiable {
     var isEnded: Bool { snapshot.isFinished }
 
     private let persistence: GamePersistenceServiceProtocol
+    private var hasHandledExitCleanup = false
 
     init(snapshot: SavedGameSnapshot, persistence: GamePersistenceServiceProtocol) {
         self.id = snapshot.id
@@ -137,10 +138,29 @@ final class GameViewModel: ObservableObject, Identifiable {
         snapshot.isFinished = true
         snapshot.endReason = .solved
         isShowingCompletionPopup = true
+        persistence.clear()
     }
 
     private func persist() {
         persistence.save(snapshot)
+    }
+
+    func handleLeavingGame() {
+        guard !hasHandledExitCleanup else { return }
+        hasHandledExitCleanup = true
+        if snapshot.isFinished && snapshot.endReason == .solved {
+            persistence.clear()
+            return
+        }
+        persist()
+    }
+
+    func handleAppMovingToBackground() {
+        if snapshot.isFinished && snapshot.endReason == .solved {
+            persistence.clear()
+            return
+        }
+        persist()
     }
 }
 #endif
