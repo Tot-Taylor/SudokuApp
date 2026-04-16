@@ -20,6 +20,8 @@ final class GameViewModel: ObservableObject, Identifiable {
     }
 
     func selectCell(row: Int, col: Int) {
+        let cell = snapshot.puzzleBoard.cell(row: row, col: col)
+        guard cell.isEditable else { return }
         snapshot.selectedRow = row
         snapshot.selectedCol = col
         persist()

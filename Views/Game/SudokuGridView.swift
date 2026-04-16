@@ -3,6 +3,8 @@ import SwiftUI
 
 struct SudokuGridView: View {
     let board: SudokuBoardState
+    let selectedRow: Int?
+    let selectedCol: Int?
     let onTap: (Int, Int) -> Void
 
     var body: some View {
@@ -10,7 +12,11 @@ struct SudokuGridView: View {
             ForEach(0..<9, id: \.self) { row in
                 HStack(spacing: 2) {
                     ForEach(0..<9, id: \.self) { col in
-                        SudokuCellView(cell: board.cell(row: row, col: col)) {
+                        SudokuCellView(
+                            cell: board.cell(row: row, col: col),
+                            isSelected: selectedRow == row && selectedCol == col,
+                            isInSelectedBand: selectedRow == row || selectedCol == col
+                        ) {
                             onTap(row, col)
                         }
                     }
