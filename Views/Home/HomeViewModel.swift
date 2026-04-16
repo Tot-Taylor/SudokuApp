@@ -6,8 +6,6 @@ import Combine
 final class HomeViewModel: ObservableObject {
     @Published var totalPoints: Int = 0
     @Published var canContinue: Bool = false
-    @Published var isGeneratingPuzzle: Bool = false
-    @Published var isRegeneratingPuzzle: Bool = false
 
     private let container: AppContainer
     private var profile = PlayerProfile.default
@@ -22,33 +20,9 @@ final class HomeViewModel: ObservableObject {
         totalPoints = profile.totalPoints
     }
 
-    func startNewGame(difficulty: Difficulty, seed: Int64? = nil) async -> SavedGameSnapshot {
-        isGeneratingPuzzle = true
-        isRegeneratingPuzzle = false
-
-        defer {
-            isGeneratingPuzzle = false
-            isRegeneratingPuzzle = false
-        }
-
+    func startNewGame(difficulty: Difficulty) -> SavedGameSnapshot {
         let settings = container.settingsService.loadSettings()
-        let puzzleGenerator = self.container.puzzleGenerator
-        var attemptOffset: Int64 = 0
-        var generated: ([[Int?]], [[Int]])?
-
-        while generated == nil {
-            let effectiveSeed = seed.map { $0 &+ attemptOffset }
-            generated = await Task.detached(priority: .userInitiated) { [puzzleGenerator, difficulty, effectiveSeed] in
-                puzzleGenerator.generatePuzzle(for: difficulty, seed: effectiveSeed)
-            }.value
-
-            if generated == nil {
-                isRegeneratingPuzzle = true
-                attemptOffset += 1
-            }
-        }
-
-        let (puzzle, solution) = generated ?? puzzleGenerator.generatePuzzle(for: difficulty)
+        let (puzzle, solution) = container.puzzleGenerator.generatePuzzle(for: difficulty)
 
         let cells = (0..<81).map { idx -> CellState in
             let row = idx / 9
