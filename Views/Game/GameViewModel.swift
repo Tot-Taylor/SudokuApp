@@ -3,7 +3,8 @@ import Foundation
 import Combine
 
 @MainActor
-final class GameViewModel: ObservableObject {
+final class GameViewModel: ObservableObject, Identifiable {
+    let id: UUID
     @Published private(set) var snapshot: SavedGameSnapshot
 
     var board: SudokuBoardState { snapshot.puzzleBoard }
@@ -13,6 +14,7 @@ final class GameViewModel: ObservableObject {
     private let persistence: GamePersistenceServiceProtocol
 
     init(snapshot: SavedGameSnapshot, persistence: GamePersistenceServiceProtocol) {
+        self.id = snapshot.id
         self.snapshot = snapshot
         self.persistence = persistence
     }
