@@ -5,6 +5,7 @@ struct SudokuCellView: View {
     let cell: CellState
     let isSelected: Bool
     let isInSelectedBand: Bool
+    let isInteractionEnabled: Bool
     let onTap: () -> Void
 
     var body: some View {
@@ -13,7 +14,7 @@ struct SudokuCellView: View {
                 .frame(maxWidth: .infinity, minHeight: 38)
                 .font(displayFont)
                 .fontWeight(cell.givenValue == nil ? .regular : .semibold)
-                .foregroundColor(cell.givenValue == nil ? .primary : .pink)
+                .foregroundColor(displayColor)
                 .background(backgroundColor)
                 .overlay(alignment: .top) {
                     Rectangle()
@@ -42,7 +43,7 @@ struct SudokuCellView: View {
                 }
         }
         .buttonStyle(.plain)
-        .disabled(!cell.isEditable)
+        .disabled(!cell.isEditable || !isInteractionEnabled)
     }
 
     private var backgroundColor: Color {
@@ -63,6 +64,13 @@ struct SudokuCellView: View {
 
     private var displayText: String {
         cell.currentValue.map(String.init) ?? "♥"
+    }
+
+    private var displayColor: Color {
+        if cell.currentValue == nil {
+            return Color(red: 0.72, green: 0.56, blue: 0.0)
+        }
+        return cell.givenValue == nil ? .primary : .pink
     }
 
     private var displayFont: Font {
