@@ -4,6 +4,7 @@ import SwiftUI
 struct HomeView: View {
     @StateObject var viewModel: HomeViewModel
     @State private var showDifficultyDialog = false
+    @State private var activeGameViewModel: GameViewModel?
 
     var body: some View {
         NavigationStack {
@@ -18,6 +19,7 @@ struct HomeView: View {
                     showDifficultyDialog = true
                 }
                 .buttonStyle(.borderedProminent)
+                .disabled(viewModel.isGenerating)
 
                 Button("Continue Game") {
                     // TODO: Wire navigation to active game.
@@ -28,15 +30,30 @@ struct HomeView: View {
                 NavigationLink("Shop") {
                     ShopView()
                 }
+
+                if viewModel.isGenerating {
+                    ProgressView()
+                }
+                if viewModel.isRegenerating {
+                    Text("Regenerating puzzle…")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
             }
             .padding()
             .confirmationDialog("Choose Difficulty", isPresented: $showDifficultyDialog) {
                 ForEach(Difficulty.allCases) { difficulty in
                     Button(difficulty.displayName) {
-                        _ = viewModel.startNewGame(difficulty: difficulty)
+                        Task {
+                            let snapshot = await viewModel.startNewGame(difficulty: difficulty)
+                            activeGameViewModel = GameViewModel(snapshot: snapshot, persistence: GamePersistenceService())
+                        }
                     }
                 }
                 Button("Cancel", role: .cancel) {}
+            }
+            .navigationDestination(item: $activeGameViewModel) { gameViewModel in
+                GameView(viewModel: gameViewModel)
             }
             .toolbar {
                 NavigationLink {
