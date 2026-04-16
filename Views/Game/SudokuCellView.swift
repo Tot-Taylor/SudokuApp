@@ -12,7 +12,7 @@ struct SudokuCellView: View {
             Text(cell.currentValue.map(String.init) ?? "·")
                 .frame(maxWidth: .infinity, minHeight: 38)
                 .fontWeight(cell.givenValue == nil ? .regular : .semibold)
-                .foregroundColor(cell.givenValue == nil ? .primary : .blue)
+                .foregroundColor(cell.givenValue == nil ? .primary : .pink)
                 .background(backgroundColor)
                 .overlay(alignment: .top) {
                     Rectangle()
@@ -46,19 +46,22 @@ struct SudokuCellView: View {
 
     private var backgroundColor: Color {
         if isSelected {
-            return Color.orange.opacity(0.35)
+            return Color.magenta.opacity(0.35)
         }
         if isInSelectedBand {
-            return Color.orange.opacity(0.15)
+            return Color.magenta.opacity(0.15)
+        }
+        if cell.givenValue == nil, cell.currentValue != nil {
+            return Color.magenta.opacity(0.2)
         }
         if cell.givenValue == nil {
             return Color.gray.opacity(0.1)
         }
-        return Color.blue.opacity(0.15)
+        return Color.pink.opacity(0.15)
     }
 
     private var borderColor: Color {
-        isSelected ? .orange : .clear
+        isSelected ? .magenta : .clear
     }
 
     private var gridLineColor: Color {
