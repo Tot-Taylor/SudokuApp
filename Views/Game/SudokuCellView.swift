@@ -46,13 +46,13 @@ struct SudokuCellView: View {
 
     private var backgroundColor: Color {
         if isSelected {
-            return Color.magenta.opacity(0.35)
+            return selectedMagenta.opacity(0.35)
         }
         if isInSelectedBand {
-            return Color.magenta.opacity(0.15)
+            return selectedMagenta.opacity(0.15)
         }
         if cell.givenValue == nil, cell.currentValue != nil {
-            return Color.magenta.opacity(0.2)
+            return selectedMagenta.opacity(0.2)
         }
         if cell.givenValue == nil {
             return Color.gray.opacity(0.1)
@@ -61,7 +61,11 @@ struct SudokuCellView: View {
     }
 
     private var borderColor: Color {
-        isSelected ? .magenta : .clear
+        isSelected ? selectedMagenta : .clear
+    }
+
+    private var selectedMagenta: Color {
+        Color(red: 1.0, green: 0.0, blue: 1.0)
     }
 
     private var gridLineColor: Color {
