@@ -12,7 +12,7 @@ struct SudokuCellView: View {
             Text(cell.currentValue.map(String.init) ?? "·")
                 .frame(maxWidth: .infinity, minHeight: 34)
                 .fontWeight(cell.givenValue == nil ? .regular : .semibold)
-                .foregroundStyle(cell.givenValue == nil ? .primary : .blue)
+                .foregroundColor(cell.givenValue == nil ? .primary : .blue)
                 .background(backgroundColor)
                 .overlay(
                     RoundedRectangle(cornerRadius: 4)
