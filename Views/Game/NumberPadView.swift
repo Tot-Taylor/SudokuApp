@@ -10,19 +10,34 @@ struct NumberPadView: View {
         VStack(spacing: 12) {
             HStack(spacing: 12) {
                 Button("Hint", action: onHintTap)
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(NumberPadButtonStyle())
                 Button("Eraser", action: onEraseTap)
-                    .buttonStyle(.bordered)
+                    .buttonStyle(NumberPadButtonStyle())
             }
             HStack {
                 ForEach(1..<10, id: \.self) { number in
                     Button("\(number)") {
                         onNumberTap(number)
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(NumberPadButtonStyle())
                 }
             }
         }
+    }
+}
+
+private struct NumberPadButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.body.weight(.semibold))
+            .foregroundStyle(Color.pink)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .fill(Color.pink.opacity(0.15))
+            )
+            .opacity(configuration.isPressed ? 0.8 : 1)
     }
 }
 #endif
