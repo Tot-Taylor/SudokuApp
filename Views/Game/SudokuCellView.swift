@@ -9,10 +9,11 @@ struct SudokuCellView: View {
 
     var body: some View {
         Button(action: onTap) {
-            Text(cell.currentValue.map(String.init) ?? "·")
+            Text(displayText)
                 .frame(maxWidth: .infinity, minHeight: 38)
+                .font(displayFont)
                 .fontWeight(cell.givenValue == nil ? .regular : .semibold)
-                .foregroundColor(cell.givenValue == nil ? .primary : .blue)
+                .foregroundColor(cell.givenValue == nil ? .primary : .pink)
                 .background(backgroundColor)
                 .overlay(alignment: .top) {
                     Rectangle()
@@ -46,19 +47,37 @@ struct SudokuCellView: View {
 
     private var backgroundColor: Color {
         if isSelected {
-            return Color.orange.opacity(0.35)
+            return selectedMagenta.opacity(0.35)
         }
         if isInSelectedBand {
-            return Color.orange.opacity(0.15)
+            return selectedMagenta.opacity(0.15)
+        }
+        if cell.givenValue == nil, cell.currentValue != nil {
+            return selectedMagenta.opacity(0.2)
         }
         if cell.givenValue == nil {
-            return Color.gray.opacity(0.1)
+            return Color.yellow.opacity(0.12)
         }
-        return Color.blue.opacity(0.15)
+        return Color.pink.opacity(0.15)
+    }
+
+    private var displayText: String {
+        cell.currentValue.map(String.init) ?? "♥"
+    }
+
+    private var displayFont: Font {
+        if cell.currentValue == nil {
+            return .system(size: 12, weight: .semibold)
+        }
+        return .body
     }
 
     private var borderColor: Color {
-        isSelected ? .orange : .clear
+        isSelected ? selectedMagenta : .clear
+    }
+
+    private var selectedMagenta: Color {
+        Color(red: 1.0, green: 0.0, blue: 1.0)
     }
 
     private var gridLineColor: Color {

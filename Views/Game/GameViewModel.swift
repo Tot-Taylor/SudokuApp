@@ -69,8 +69,7 @@ final class GameViewModel: ObservableObject, Identifiable {
     }
 
     func useHint() {
-        guard snapshot.remainingHints > 0,
-              let row = snapshot.selectedRow,
+        guard let row = snapshot.selectedRow,
               let col = snapshot.selectedCol,
               !snapshot.isFinished
         else { return }
@@ -78,7 +77,7 @@ final class GameViewModel: ObservableObject, Identifiable {
         let cell = snapshot.puzzleBoard.cell(row: row, col: col)
         guard cell.isEditable else { return }
 
-        snapshot.remainingHints -= 1
+        snapshot.remainingHints = max(0, snapshot.remainingHints - 1)
         snapshot.undoStack.append(
             UndoEntry(row: row, col: col, previousValue: cell.currentValue, newValue: cell.solutionValue, previousOrigin: cell.origin, newOrigin: .hint, actionType: .hint)
         )
