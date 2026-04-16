@@ -8,9 +8,9 @@ struct SudokuGridView: View {
     let onTap: (Int, Int) -> Void
 
     var body: some View {
-        VStack(spacing: 2) {
+        VStack(spacing: 0) {
             ForEach(0..<9, id: \.self) { row in
-                HStack(spacing: 2) {
+                HStack(spacing: 0) {
                     ForEach(0..<9, id: \.self) { col in
                         SudokuCellView(
                             cell: board.cell(row: row, col: col),

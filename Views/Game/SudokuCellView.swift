@@ -10,14 +10,35 @@ struct SudokuCellView: View {
     var body: some View {
         Button(action: onTap) {
             Text(cell.currentValue.map(String.init) ?? "·")
-                .frame(maxWidth: .infinity, minHeight: 34)
+                .frame(maxWidth: .infinity, minHeight: 38)
                 .fontWeight(cell.givenValue == nil ? .regular : .semibold)
                 .foregroundColor(cell.givenValue == nil ? .primary : .blue)
                 .background(backgroundColor)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 4)
-                        .stroke(borderColor, lineWidth: isSelected ? 2 : 1)
-                )
+                .overlay(alignment: .top) {
+                    Rectangle()
+                        .fill(gridLineColor)
+                        .frame(height: topLineWidth)
+                }
+                .overlay(alignment: .leading) {
+                    Rectangle()
+                        .fill(gridLineColor)
+                        .frame(width: leftLineWidth)
+                }
+                .overlay(alignment: .bottom) {
+                    Rectangle()
+                        .fill(gridLineColor)
+                        .frame(height: bottomLineWidth)
+                }
+                .overlay(alignment: .trailing) {
+                    Rectangle()
+                        .fill(gridLineColor)
+                        .frame(width: rightLineWidth)
+                }
+                .overlay {
+                    Rectangle()
+                        .stroke(borderColor, lineWidth: isSelected ? 2 : 0)
+                        .padding(1)
+                }
         }
         .buttonStyle(.plain)
         .disabled(!cell.isEditable)
@@ -37,10 +58,29 @@ struct SudokuCellView: View {
     }
 
     private var borderColor: Color {
-        if isSelected {
-            return .orange
-        }
-        return Color.gray.opacity(0.25)
+        isSelected ? .orange : .clear
+    }
+
+    private var gridLineColor: Color {
+        Color.black.opacity(0.35)
+    }
+
+    private var topLineWidth: CGFloat {
+        cell.row % 3 == 0 ? 2 : 0.75
+    }
+
+    private var leftLineWidth: CGFloat {
+        cell.col % 3 == 0 ? 2 : 0.75
+    }
+
+    private var bottomLineWidth: CGFloat {
+        if cell.row == 8 { return 2 }
+        return (cell.row + 1) % 3 == 0 ? 2 : 0.75
+    }
+
+    private var rightLineWidth: CGFloat {
+        if cell.col == 8 { return 2 }
+        return (cell.col + 1) % 3 == 0 ? 2 : 0.75
     }
 }
 #endif

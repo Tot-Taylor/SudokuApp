@@ -13,9 +13,14 @@ struct GameView: View {
             ) { row, col in
                 viewModel.selectCell(row: row, col: col)
             }
-            NumberPadView { value in
-                viewModel.placeNumber(value)
-            }
+            NumberPadView(
+                onNumberTap: { value in
+                    viewModel.placeNumber(value)
+                },
+                onEraseTap: {
+                    viewModel.eraseSelectedCell()
+                }
+            )
         }
         .padding()
     }
