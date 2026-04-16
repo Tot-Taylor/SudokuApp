@@ -2,6 +2,7 @@ import Foundation
 
 protocol GamePersistenceServiceProtocol {
     func load() -> SavedGameSnapshot?
+    func hasSnapshotData() -> Bool
     func save(_ snapshot: SavedGameSnapshot)
     func clear()
 }
@@ -17,6 +18,10 @@ final class GamePersistenceService: GamePersistenceServiceProtocol {
     func load() -> SavedGameSnapshot? {
         guard let data = defaults.data(forKey: key) else { return nil }
         return try? JSONDecoder().decode(SavedGameSnapshot.self, from: data)
+    }
+
+    func hasSnapshotData() -> Bool {
+        defaults.data(forKey: key) != nil
     }
 
     func save(_ snapshot: SavedGameSnapshot) {

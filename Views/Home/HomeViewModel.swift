@@ -8,6 +8,7 @@ final class HomeViewModel: ObservableObject {
     @Published var canContinue: Bool = false
     @Published var isGenerating = false
     @Published var isRegenerating = false
+    @Published var restoreErrorMessage: String?
 
     private let container: AppContainer
     private var profile = PlayerProfile.default
@@ -18,8 +19,31 @@ final class HomeViewModel: ObservableObject {
     }
 
     func refresh() {
-        canContinue = container.gamePersistenceService.load() != nil
+        let savedSnapshot = container.gamePersistenceService.load()
+        canContinue = savedSnapshot != nil
+        if savedSnapshot == nil && container.gamePersistenceService.hasSnapshotData() {
+            restoreErrorMessage = "We couldn't restore your saved game. The saved data appears to be invalid."
+            container.gamePersistenceService.clear()
+            canContinue = false
+        }
         totalPoints = profile.totalPoints
+    }
+
+    func loadSavedGame() -> SavedGameSnapshot? {
+        let savedSnapshot = container.gamePersistenceService.load()
+        guard let savedSnapshot else {
+            if container.gamePersistenceService.hasSnapshotData() {
+                restoreErrorMessage = "We couldn't restore your saved game. The saved data appears to be invalid."
+                container.gamePersistenceService.clear()
+                canContinue = false
+            }
+            return nil
+        }
+        return savedSnapshot
+    }
+
+    func clearRestoreError() {
+        restoreErrorMessage = nil
     }
 
     func startNewGame(difficulty: Difficulty, seed: UInt64? = nil) async -> SavedGameSnapshot {
