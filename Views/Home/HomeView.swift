@@ -5,6 +5,7 @@ struct HomeView: View {
     @StateObject var viewModel: HomeViewModel
     @State private var showDifficultyDialog = false
     @State private var activeGameViewModel: GameViewModel?
+    @State private var isGameActive = false
 
     var body: some View {
         NavigationStack {
@@ -39,6 +40,17 @@ struct HomeView: View {
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
+
+                NavigationLink(isActive: $isGameActive) {
+                    if let activeGameViewModel {
+                        GameView(viewModel: activeGameViewModel)
+                    } else {
+                        EmptyView()
+                    }
+                } label: {
+                    EmptyView()
+                }
+                .hidden()
             }
             .padding()
             .confirmationDialog("Choose Difficulty", isPresented: $showDifficultyDialog) {
@@ -47,13 +59,11 @@ struct HomeView: View {
                         Task {
                             let snapshot = await viewModel.startNewGame(difficulty: difficulty)
                             activeGameViewModel = GameViewModel(snapshot: snapshot, persistence: GamePersistenceService())
+                            isGameActive = true
                         }
                     }
                 }
                 Button("Cancel", role: .cancel) {}
-            }
-            .navigationDestination(item: $activeGameViewModel) { gameViewModel in
-                GameView(viewModel: gameViewModel)
             }
             .toolbar {
                 NavigationLink {
