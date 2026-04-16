@@ -17,6 +17,9 @@ struct GameView: View {
                 onNumberTap: { value in
                     viewModel.placeNumber(value)
                 },
+                onHintTap: {
+                    viewModel.useHint()
+                },
                 onEraseTap: {
                     viewModel.eraseSelectedCell()
                 }
